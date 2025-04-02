@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 public class PasswordStrengthMeterTest {
 
-    private PasswordStrengthMeter meter = new PasswordStrengthMeter();
+    private final PasswordStrengthMeter meter = new PasswordStrengthMeter();
 
     private void assertStrength(String password, PasswordStrength expStr) {
-        PasswordStrength result = this.meter.meter(password);
+        PasswordStrength result = meter.meter(password);
         assertEquals(expStr, result);
     }
 
@@ -34,6 +34,11 @@ public class PasswordStrengthMeterTest {
     @Test
     void nullInput_Then_Invalid() {
         assertStrength(null, PasswordStrength.INVALID);
+    }
+
+    @Test
+    void emptyInout_Then_Invalid(){
+        assertStrength("", PasswordStrength.INVALID);
     }
 
 }
