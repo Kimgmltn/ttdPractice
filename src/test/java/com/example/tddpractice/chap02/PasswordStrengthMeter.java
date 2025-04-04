@@ -4,14 +4,20 @@ public class PasswordStrengthMeter {
 
     public PasswordStrength meter(String s) {
         if(s == null || s.isEmpty()) return PasswordStrength.INVALID;
-        if (s.length() < 8) {
-            return PasswordStrength.NORMAL;
+
+        boolean lengthEnough = s.length() >= 8;
+        boolean containsNum = meetsContainingNumberCriteria(s);
+        boolean containsUpp = meetsContainingUppercaseCriteria(s);
+
+        if (lengthEnough && !containsNum && !containsUpp) {
+            return PasswordStrength.WEAK;
         }
 
-        boolean containsNum = meetsContainingNumberCriteria(s);
-        if(!containsNum) return PasswordStrength.NORMAL;
 
-        boolean containsUpp = meetsContainingUppercaseCriteria(s);
+        if (!lengthEnough) {
+            return PasswordStrength.NORMAL;
+        }
+        if(!containsNum) return PasswordStrength.NORMAL;
         if(!containsUpp) return PasswordStrength.NORMAL;
         return PasswordStrength.STRONG;
     }
