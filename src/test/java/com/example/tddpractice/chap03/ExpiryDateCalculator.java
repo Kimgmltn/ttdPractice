@@ -7,14 +7,23 @@ public class ExpiryDateCalculator {
     public LocalDate calculateExpiryDate(PayData payData) {
         int addMonth = payData.getPayAmount() / 10000;
         if (payData.getFirstBillingDate() != null) {
-            LocalDate candidateExp = payData.getBillingDate().plusMonths(addMonth);
-            if (payData.getFirstBillingDate().getDayOfMonth() != candidateExp.getDayOfMonth()) {
-                if (YearMonth.from(candidateExp).lengthOfMonth() < payData.getFirstBillingDate().getDayOfMonth()) {
-                    return candidateExp.withDayOfMonth(YearMonth.from(candidateExp).lengthOfMonth());
-                }
-                return candidateExp.withDayOfMonth(payData.getFirstBillingDate().getDayOfMonth());
-            }
+            return expiryDateUsingFirstBillingDate(payData, addMonth);
+        } else{
+            return payData.getBillingDate().plusMonths(addMonth);
         }
-        return payData.getBillingDate().plusMonths(addMonth);
+    }
+
+    private LocalDate expiryDateUsingFirstBillingDate(PayData payData, int addMonth) {
+        LocalDate candidateExp = payData.getBillingDate().plusMonths(addMonth);
+        final int dayOfFirstBilling = payData.getFirstBillingDate().getDayOfMonth();
+        final int dayLenOfCandiMon = YearMonth.from(candidateExp).lengthOfMonth();
+        if (dayOfFirstBilling != candidateExp.getDayOfMonth()) {
+            if (dayLenOfCandiMon < dayOfFirstBilling) {
+                return candidateExp.withDayOfMonth(dayLenOfCandiMon);
+            }
+            return candidateExp.withDayOfMonth(dayOfFirstBilling);
+        }else{
+            return candidateExp;
+        }
     }
 }
